@@ -22,7 +22,10 @@ public class CameraMove : MonoBehaviour
 
 	private void Update()
 	{
-		if(targetCamera == null) return;
+		if(targetCamera == null)
+			return;
+		if(Utility.CheckMouseOnUI())
+			return;
 
 		/// Rotate
 		if(Input.GetMouseButton(0))
