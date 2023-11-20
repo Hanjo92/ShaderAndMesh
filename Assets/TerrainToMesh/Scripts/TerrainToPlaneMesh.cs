@@ -26,11 +26,13 @@ public class TerrainToPlaneMesh : MonoBehaviour
 
         var meshParents = (chunkCount > 1) ? new GameObject("Mesh Parent").transform : null;
 		var chunkStep = 1 / (float)chunkCount;
+        var chunks = new List<GameObject>();
 		for(int h = 0; h < chunkCount; h++)
         {
 			for(int w = 0; w < chunkCount; w++)
             {
 				var copyPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                chunks.Add(copyPlane);
 				copyPlane.transform.SetParent(meshParents);
 				copyPlane.name = "CreatedPlane";
 				var meshFilter = copyPlane.GetComponent<MeshFilter>();
@@ -89,7 +91,6 @@ public class TerrainToPlaneMesh : MonoBehaviour
 				meshFilter.mesh = mesh;
 			}
         }
-        
 
 		//var tLayers = terrainData.terrainLayers;
   //      if(tLayers == null || tLayers.Length == 0)
@@ -178,6 +179,96 @@ public class TerrainToPlaneMesh : MonoBehaviour
   //      sM.SetTexture("TilingMap", tilingMap);
   //      sM.SetFloat("DiffuseSize", albedos.Count - 1);
   //      mr.sharedMaterial = sM;
+
+        var tLayers = terrainData.terrainLayers;
+        if(tLayers == null || tLayers.Length == 0)
+            return;
+
+        Texture2D diffuse;
+        Texture2D normal;
+        var albedos = new List<Texture2D>();
+        var normals = new List<Texture2D>();
+        var defaultW = tLayers[0].diffuseTexture.width;
+        var defaultH = tLayers[0].diffuseTexture.height;
+
+        for(int i = 0; i < tLayers.Length; i++)
+        {
+            diffuse = tLayers[i].diffuseTexture;
+            if(diffuse == null)
+            {
+                diffuse = new Texture2D(defaultW, defaultH);
+                var pix = diffuse.GetPixels();
+                for(int j = 0; j < pix.Length; j++)
+                {
+                    pix[j] = Color.white;
+
+                }
+                diffuse.SetPixels(pix);
+            }
+            albedos.Add(diffuse);
+            normal = tLayers[i].normalMapTexture;
+            if(tLayers[i].normalMapTexture == null)
+            {
+                normal = new Texture2D(defaultW, defaultH);
+                var pix = normal.GetPixels();
+                for(int j = 0; j < pix.Length; j++)
+                {
+                    pix[j] = Color.black;
+                    pix[j].a = 0;
+                }
+                normal.SetPixels(pix);
+            }
+            normals.Add(normal);
+        }
+        diffuse = new Texture2D(defaultW, defaultH);
+        var p = diffuse.GetPixels();
+        for(int j = 0; j < p.Length; j++)
+        {
+            p[j] = Color.white;
+
+        }
+        diffuse.SetPixels(p);
+        albedos.Add(diffuse);
+
+        var diffuseArr = CreateTextureArray(albedos);
+        var normalArr = CreateTextureArray(normals);
+        var splats = CreateTextureArray(testT);
+        var tilingMap = new Texture2D(albedos.Count, 1);
+
+        for(int i = 0; i < albedos.Count - 1; i++)
+        {
+            Vector2 tiling = tLayers[i].tileSize;
+            float pow = 0;
+            while(tiling.x > 1 || tiling.y > 1)
+            {
+                tiling *= 0.1f;
+                pow += 1f;
+            }
+            Color tilingHash = new Color(tiling.x, tiling.y, pow / 255f, 1f);
+
+            tilingMap.SetPixel(i, 0, tilingHash);
+        }
+        tilingMap.SetPixel(albedos.Count - 1, 0, Color.white);
+
+		UnityEditor.AssetDatabase.CreateAsset(diffuseArr, "Assets/TerrainToMesh/Graphics/Textures/d.asset");
+		UnityEditor.AssetDatabase.CreateAsset(normalArr, "Assets/TerrainToMesh/Graphics/Textures/n.asset");
+		UnityEditor.AssetDatabase.CreateAsset(splats, "Assets/TerrainToMesh/Graphics/Textures/s.asset");
+		UnityEditor.AssetDatabase.CreateAsset(tilingMap, "Assets/TerrainToMesh/Graphics/Textures/t.asset");
+
+		foreach(var chunk in chunks)
+		{
+			var mr = chunk.GetComponent<MeshRenderer>();
+			if(mr == null)
+				continue;
+
+			var sM = mr.sharedMaterial;
+			sM.SetTexture("Diffuses", diffuseArr);
+			sM.SetTexture("Normals", normalArr);
+			sM.SetTexture("Splats", splats);
+			sM.SetTexture("TilingMap", tilingMap);
+			sM.SetFloat("DiffuseSize", albedos.Count - 1);
+			mr.sharedMaterial = sM;
+		}
     }
 
     public Texture2D[] testT;
