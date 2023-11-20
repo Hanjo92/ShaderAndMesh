@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 [RequireComponent( typeof( MeshFilter ), typeof( MeshRenderer ) )]
@@ -85,5 +87,14 @@ public class Plane : MonoBehaviour
                 triangles.Add( pibot + 1 );
             }
         }
+    }
+
+	[Button("Save")]
+	public bool save = false;
+    public void Save()
+    {
+        var p = Application.dataPath;
+        var savePath = $"Assets/{verticsCount}Plane.asset" ;
+        AssetDatabase.CreateAsset(meshFilter.mesh, savePath);
     }
 }
