@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7, type: 3}
-  m_RendererFeatures: []
-  m_RendererFeatureMap: 
+  m_RendererFeatures:
+  - {fileID: 7863048827870348353}
+  - {fileID: 4788457617987176358}
+  - {fileID: 366132280952624955}
+  m_RendererFeatureMap: 4184c3ac3f291f6da687234ed50474423b17fca25ec31405
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -53,3 +56,48 @@ MonoBehaviour:
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
+--- !u!114 &366132280952624955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d6a534fbb08c7b47b277015c8376c33, type: 3}
+  m_Name: GlitchFeature
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  renderPassEvent: 550
+  glitchMaterial: {fileID: 2100000, guid: 3fb7b56fa38e5d9418aa13b95cc601bb, type: 2}
+--- !u!114 &4788457617987176358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad7b3573729b93c42b2ac2327138eb7f, type: 3}
+  m_Name: PixelizeFeature
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  renderPassEvent: 550
+  pixelizeMaterial: {fileID: 2100000, guid: e1ca8d458996a5149be0f86d84eee9f4, type: 2}
+--- !u!114 &7863048827870348353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf4bea8dd5a39f44be21f61fa8518f3, type: 3}
+  m_Name: WorldOutlineFeature
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  renderPassEvent: 550
+  effectMaterial: {fileID: 2100000, guid: 1dacfa1fc2f69ea4f894d0ffacaf565f, type: 2}
